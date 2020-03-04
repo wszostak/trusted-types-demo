@@ -1,6 +1,7 @@
 <?php
 $showInMeta = !empty($_GET['meta']);
 $showHeader = !empty($_GET['header']);
+$showInData = !empty($_GET['data']);
 $forceTT = !empty($_GET['force']);
 
 $policy = 'trusted-types *;';
@@ -19,7 +20,7 @@ if ($showHeader) {
 <meta http-equiv="Content-Security-Policy" content="<?php echo($policy); ?>">
 <?php endif; ?>
 <title>Trusted types test</title>
-<script src="trustedtypes.build.js" data-csp="<?php echo($policy); ?>"></script>
+<script src="trustedtypes.build.js"<?php echo($showInData?' data-csp="'.$policy.'"':''); ?>></script>
 </head>
 <body>
 
@@ -27,9 +28,10 @@ if ($showHeader) {
 <p><strong>Opcje</strong></p>
 
 <form method="get" action="">
-<p><input type="checkbox" name="meta" <?php echo($showInMeta?'checked':''); ?>> <em>Wstaw CSP w tagu meta</em></p>
-<p><input type="checkbox" name="header" <?php echo($showHeader?'checked':''); ?>> <em>Wstaw CSP w nagłówku</em></p>
-<p><input type="checkbox" name="force" <?php echo($forceTT?'checked':''); ?>> <em>Wymuś stosowanie Trusted Types</em></p>
+<p><input type="checkbox" name="header"<?php echo($showHeader?' checked':''); ?>> <em>Wstaw CSP w nagłówku</em></p>
+<p><input type="checkbox" name="data"<?php echo($showInData?' checked':''); ?>> <em>Wstaw CSP w <code>data-csp</code></em></p>
+<p><input type="checkbox" name="meta"<?php echo($showInMeta?' checked':''); ?>> <em>Wstaw CSP w tagu meta</em></p>
+<p><input type="checkbox" name="force"<?php echo($forceTT?' checked':''); ?>> <em>Wymuś stosowanie Trusted Types</em></p>
 <p><button type="submit">Wyślij</button></p>
 </form>
 </section>

@@ -49,6 +49,12 @@ const raw  = document.getElementById('raw');
 raw.innerHTML = dirty;
 </script>
 
+<script>
+const script = document.createElement('script');
+script.src = 'test.js'
+document.body.appendChild(script)
+</script>
+
 
 </body>
 </html>

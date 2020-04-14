@@ -4,7 +4,7 @@ $showHeader = !empty($_GET['header']);
 $showInData = !empty($_GET['data']);
 $forceTT = !empty($_GET['force']);
 
-$policy = 'trusted-types *;';
+$policy = 'trusted-types ws-policy;';
 if ($forceTT) {
     $policy .= ' require-trusted-types-for \'script\';';
 } 
@@ -21,6 +21,27 @@ if ($showHeader) {
 <?php endif; ?>
 <title>Trusted types test</title>
 <script src="trustedtypes.build.js"<?php echo($showInData?' data-csp="'.$policy.'"':''); ?>></script>
+<script>
+    const trustedTypesEnabled = typeof trustedTypes != 'undefined';
+	const wsPolicy = trustedTypesEnabled ? trustedTypes.createPolicy('ws-policy', {
+        createHTML(i) {
+            return i;
+            // throw new TypeError('Disallowed HTML');
+        },
+createURL(i) {
+		debugger;
+        throw new TypeError('Disallowed URL');
+    },
+    createScriptURL(i) {
+		debugger;
+        throw new TypeError('Disallowed Script URL');
+    },
+    createScript(i) {
+		debugger;
+        throw new TypeError();
+    }
+    }, true) : null;
+</script>
 </head>
 <body>
 
@@ -44,11 +65,17 @@ if ($showHeader) {
 <hr>
 
 <div id="raw"></div>
+<div id="trusted"></div>
 
 <script>
 const dirty = '<p onclick=alert(2)>HELLO<iframe srcdoc="<script>alert(1)</scr'+'ipt>"></ifrAMe><br>goodbye</p>';
 const raw  = document.getElementById('raw');
 raw.innerHTML = dirty;
+</script>
+
+<script>
+const trustedHTML = '<p>Trusted<iframe srcdoc="<script>console.log(\'I\\\'m trusted\')</scr'+'ipt>"></p>';
+document.getElementById('trusted').innerHTML = wsPolicy.createHTML(trustedHTML);
 </script>
 
 <script>
